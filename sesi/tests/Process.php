@@ -19,8 +19,10 @@ class Process{
     //계산
     private $rowHeader;     // csv 파일 row1
     private $rowAnswer;      // csv 파일 나머지 row
+    private $studentInfo = "studentInfo";
+    private $studentAnswer = "studentAnswer";
 
-    //데이터 형식 정의된 클래스
+   //데이터 형식 정의된 클래스
     private $dataFormat;
     private $questionBeginIndex;    // 문제 시작 인덱스
     private $questionEndIndex;      // 문제 종료 인덱스
@@ -73,10 +75,14 @@ class Process{
     private function readUploadFile(){
         $this->file = fopen($this->fileLocation,"r");
     }
-
+    // 파일 닫기
+    private function closeUploadFile(){
+        fclose($this->file);
+        $this->file= null;
+    }
     // 파일 닫고 파일 삭제
     private function deleteUploadFile(){
-        fclose($this->file);
+        $this->closeUploadFile();
         unlink($this->fileLocation);
     }
 
@@ -86,40 +92,61 @@ class Process{
         return move_uploaded_file($this->fileLocation);
     }
 
-    // 파일 내용 검증
-    public function isFileDataFormat(){
-        $this->readUploadFile();
+    // 파일 읽어 계산 준비
+    // 파일 내용 검증은 불필요 하다. 무효는 무조건 0으로 처리하기 때문.
+    public function scoringPrepare(){
+        try{
 
-        // 첫 행은 그냥 통과
-        fgetcsv($this->file);
+            $this->readUploadFile();
 
-        while ( ($row = fgetcsv($this->file)) !== false ){
+            // 첫 row 복사
+            $this->rowHeader = fgetcsv($this->file);
 
-            if ( count($row) !== ($this->questionEndColumn) ){
+            // 첫 행에서 전체 문항수를 체크
+            if ( count($this->rowHeader) !== ($this->questionEndColumn) ){
                 $this->deleteUploadFile();
                 $this->returnMassage = $this->dataFormat->getMessage("countFail");
                 return false;
             }
 
-            for($i = $this->questionBeginIndex; $i < $this->questionEndIndex; $i++){
-                $answer = $row[$i];
+            $rowCount = 0;
 
-                if(! (1<= $answer && $answer <= $this->answerDataRange) ){
-                    $answer = $answer;
-                    $this->deleteUploadFile();
-                    $this->returnMassage = $this->dataFormat->getMessage("formatFail");
-                    return false;
+            while ( ($row = fgetcsv($this->file)) !== false ){
+                // 학생 정보 저장
+                $this->rowAnswer[$rowCount][$this->studentInfo] = array_slice($row, 0, $this->questionBeginColumn);
+                // 답변 정보 저장
+                $this->rowAnswer[$rowCount][$this->studentAnswer] = array_slice($row, $this->questionBeginColumn, $this->questionEndColumn);
+
+                for($i = $this->questionBeginIndex; $i < $this->questionEndIndex; $i++){
+                    $answer = $row[$i];
+
+                    // 벗어난 값은 0으로 처리.
+                    if(! (1<= $answer && $answer <= $this->answerDataRange) ){
+                        if( $i == 25){
+ //확인이 필요
+                        }
+                        $this->rowAnswer[$rowCount][$this->studentAnswer][$i] = "0";
+                        if( $i == 25){
+
+                        }
+
+                    }
                 }
+                $rowCount++;
             }
-        }
-        fclose($this->file);
-        return true;
-    }
 
+            $this->closeUploadFile();
+            return true;
+
+        } catch (Exception $e){
+            return false;
+        }
+    }
+/*
     // 파일 읽고 점수계산
     // 파일 읽어 계산 준비
     public function scoringPrepare(){
-        try {
+       // try {
             $this->readUploadFile();
             $rowCount = 0;
 
@@ -134,14 +161,15 @@ class Process{
             }
             fclose($this->file);
             return true;
-        } catch (Exception $e){
-            return false;
-        }
+        //} catch (Exception $e){
+//            return false;
+  //      }
     }
 
     public function scoring(){
 
     }
+*/
 }
 
 ?>

@@ -41,9 +41,9 @@ class ProcessTest extends PHPUnit_Framework_TestCase{
     //파일 내용 검증
     public function testFileDataFormat(){
         $this->setFileLocation();
-        $this->assertTrue($this->testClass->isFileDataFormat());
+        $this->assertTrue($this->testClass->scoringPrepare());
     }
-
+/*
     // 파일읽고 점수계산 준비
     public function testScoringPrepare(){
         $this->assertTrue($this->testClass->scoringPrepare());
@@ -52,4 +52,5 @@ class ProcessTest extends PHPUnit_Framework_TestCase{
         //$this->assertEquls($this->testClass->setTscore(), $this->testTscore);
         //$this->assert($this->testClass->getFile());
     }
+*/
 }
