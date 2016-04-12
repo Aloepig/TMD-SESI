@@ -21,27 +21,24 @@ class ProcessTest extends PHPUnit_Framework_TestCase{
         $this->testClass = new Process();
     }
 
+    //파일을 읽도록 위치를 세팅하는 함수
+    public function setFileLocation(){
+        $this->testClass->setFileLocation($this->testFileName);
+    }
+    
     // 업로드 폴더 만들기 테스트
     public function testCanFileUpload(){
         $this->assertFileExists($this->testClass->getUploadDirName());
     }
-
+ 
     //업로드 파일 서버 복사 테스트 생략
-    /*
-    public function testCanFileCopy(){
-        assertFileEquals();
-    }
-    */
-
-    //파일을 읽도록 위치를 세팅
-    public function setFileLocation(){
-        $this->testClass->setFileLocation($this->testFileName);
-    }
+    //assertFileEquals();
 
     //파일 내용 검증
     public function testFileDataFormat(){
         $this->setFileLocation();
         $this->assertTrue($this->testClass->scoringPrepare());
+
     }
 /*
     // 파일읽고 점수계산 준비

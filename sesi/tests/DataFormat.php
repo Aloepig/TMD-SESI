@@ -17,8 +17,10 @@ class DataFormat {
         "formatFail"=>"문항 입력값이 1~5 가 아닙니다(파일 형식이 다릅니다)."
     ];
 
+    // 컬럼 수: 1~150 (총150개)
+    // 문제 컬럼: 9~150 (총142개)
     private $dataFormat = [
-        "questionBeginColumn" => 8,
+        "questionBeginColumn" => 9,
         "questionEndColumn" => 150,
         "answerDataRange" => 5
     ];
@@ -34,4 +36,5 @@ class DataFormat {
     public function getDataFormat($select){
         return $this->dataFormat[$select];
     }
+
 }

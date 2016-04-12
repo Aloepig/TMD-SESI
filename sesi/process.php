@@ -3,17 +3,17 @@
     include_once "score_table.php";
     
     $uploaddir = "temp_upload";
-    
+
     // 임시 업로드 폴더 만들기
     if(!file_exists($uploaddir)) {
         mkdir($uploaddir);
     }
-    
+
     $uploadfile = $uploaddir."/".basename($_FILES["file"]["name"]);
-    
+
     // 업로드 된 파일을 임시저장
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $uploadfile)) {
-        
+
         // 파일 읽기
         $file = fopen($uploadfile, "r");
         if ($file) {

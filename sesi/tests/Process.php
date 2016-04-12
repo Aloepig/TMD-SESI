@@ -9,6 +9,8 @@
 include_once "DataFormat.php";
 
 class Process{
+
+    //////// DataFormat에서 설정한 값을 읽기 위한 변수 ////
     private $uploadDirName; // 업로드 디렉토리 이름
     private $fileLocation;  // 파일 위치
     private $file;          // 파일(읽음)
@@ -19,6 +21,7 @@ class Process{
     //계산
     private $rowHeader;     // csv 파일 row1
     private $rowAnswer;      // csv 파일 나머지 row
+
     private $studentInfo = "studentInfo";
     private $studentAnswer = "studentAnswer";
 
@@ -32,6 +35,7 @@ class Process{
     private $answerDataRange;       // 데이터 범위 1 부터 X 까지
     
     public function __construct(){
+        // 정의된 값을 세팅한다.
         $this->dataFormat = new DataFormat();
         $this->uploadDirName = $this->dataFormat->getUploadDirName();
         $this->questionBeginColumn = $this->dataFormat->getDataFormat("questionBeginColumn"); // 엑셀 열 번호
@@ -113,23 +117,16 @@ class Process{
 
             while ( ($row = fgetcsv($this->file)) !== false ){
                 // 학생 정보 저장
-                $this->rowAnswer[$rowCount][$this->studentInfo] = array_slice($row, 0, $this->questionBeginColumn);
+                $this->rowAnswer[$rowCount][$this->studentInfo] = array_slice($row, 0, $this->questionBeginIndex);
                 // 답변 정보 저장
-                $this->rowAnswer[$rowCount][$this->studentAnswer] = array_slice($row, $this->questionBeginColumn, $this->questionEndColumn);
+                $this->rowAnswer[$rowCount][$this->studentAnswer] = array_slice($row, $this->questionBeginIndex, $this->questionEndColumn);
 
                 for($i = $this->questionBeginIndex; $i < $this->questionEndIndex; $i++){
-                    $answer = $row[$i];
+                    $answerNumber = $row[$i];
 
-                    // 벗어난 값은 0으로 처리.
-                    if(! (1<= $answer && $answer <= $this->answerDataRange) ){
-                        if( $i == 25){
- //확인이 필요
-                        }
-                        $this->rowAnswer[$rowCount][$this->studentAnswer][$i] = "0";
-                        if( $i == 25){
-
-                        }
-
+                    // 벗어난 값은 0으로 처리. 묵시적으로 숫자형태가 아니거나 null 이어도 벗어난 값으로 처리된다.
+                    if(! (1<= $answerNumber && $answerNumber <= $this->answerDataRange) ){
+                        $this->rowAnswer[$rowCount][$this->studentAnswer][$i-$this->questionBeginIndex] = "0";
                     }
                 }
                 $rowCount++;
@@ -142,6 +139,15 @@ class Process{
             return false;
         }
     }
+
+    // 점수 합산하기
+
+    // 점수 점수계산하기
+
+    // 파일로 만들기
+
+    // 종료 및 화면출력
+
 /*
     // 파일 읽고 점수계산
     // 파일 읽어 계산 준비
