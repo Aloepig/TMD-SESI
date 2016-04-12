@@ -21,9 +21,7 @@ class Process{
     //계산
     private $rowHeader;     // csv 파일 row1
     private $rowAnswer;      // csv 파일 나머지 row
-
-    private $studentInfo = "studentInfo";
-    private $studentAnswer = "studentAnswer";
+    private $studentInfo = "studentInfo";    private $studentAnswer = "studentAnswer";
 
    //데이터 형식 정의된 클래스
     private $dataFormat;
