@@ -24,9 +24,6 @@ class Process{
     private $file;          // 파일(읽음)
     private $fileLocation;  // 파일 위치
 
-    // 출력
-    private $returnMassage; // 출력 메시지
-
     //////// DataFormat에서 설정한 값을 읽기 위한 변수 ////
     private $dataFormat;
     private $uploadDirName;         // 업로드 디렉토리 이름
@@ -98,8 +95,10 @@ class Process{
 
     // 파일 복사
     public function fileCopy(){
-        $this->setFileLocation($_FILES["file"]["name"]);
-        return move_uploaded_file($this->fileLocation);
+        $fileName = $_FILES["file"]["name"];
+        $tmpFileName =  $_FILES["file"]["tmp_name"];
+        $this->setFileLocation($fileName);
+        return move_uploaded_file($tmpFileName, $this->fileLocation);
     }
 
     // 파일 읽어 계산 준비 - 임시파일은 읽고 나서 삭제한다.
@@ -114,7 +113,6 @@ class Process{
             // 첫 행에서 전체 문항수를 체크
             if ( count($this->rowHeader) !== ($this->questionEndColumn) ){
                 $this->deleteUploadFile();
-                $this->returnMassage = $this->dataFormat->getMessage("countFail");
                 return false;
             }
 
