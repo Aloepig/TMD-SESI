@@ -282,7 +282,7 @@ class Process{
         // 파일 다운로드 처리 (하기 헤더가 있으면 파일다운로드로 간주한다.)
         header('Content-Type: application/octet-stream');
         header("Content-Transfer-Encoding: Binary");
-        header("Content-disposition: attachment; filename=\"" . $this->fileName . "_result.csv" . "\"");
+        header("Content-disposition: attachment; filename=\"" . "result_" . $this->fileName . "\"");
 
         echo $this->makeCSVStringRowHeader();
         echo "\r\n";
