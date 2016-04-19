@@ -6,11 +6,20 @@
  * Time: 오후 4:06
  */
 include_once "Process.php";
+include_once "DataFormat.php";
 
 $processClass = new Process();
 
-$processClass->fileCopy();
-$processClass->scoringPrepare(true);
-$processClass->sumScoring();
-$processClass->tScoring();
-$processClass->CSVDownlod();
+if ( $processClass->fileCopy() ){
+    
+    if ($processClass->scoringPrepare(true)){
+        $processClass->sumScoring();
+        $processClass->tScoring();
+        $processClass->CSVDownlod();
+    } else {
+        echo DataFormat::MASSAGE_COUNT_FAIL;
+    }
+    
+} else {
+    echo DataFormat::MASSAGE_UPLOAD_FAIL;
+}
