@@ -100,6 +100,21 @@ class Process{
         return move_uploaded_file($tmpFileName, $this->fileLocation);
     }
 
+    // 인코딩 확인
+    public function detectStringEncoding($string){
+        $encoding = array("UTF-8", "EUC-KR");
+        foreach ($encoding as $item){
+            try{
+                if( iconv($item, $item, $string) != false){
+                    return $item;
+                }
+            } catch (Exception $e){
+                // php 5.6에서는 잘못된 문자열이 들어오면 false가 아닌 에러를 던짐.
+            }
+        }
+        return DataFormat::INPUT_DEFAULT_ENCODING;
+    }
+
     // 파일 읽어 계산 준비 - 임시파일은 읽고 나서 삭제한다.
     // 파일 내용 검증은 불필요 하다. 무효는 무조건 0으로 처리하기 때문.
     public function scoringPrepare($isDeleteCsvFile){
@@ -242,7 +257,8 @@ class Process{
         $countResultHeader = count($resultHeader);
 
         for ($i = 0; $i < $countResultHeader; $i++){
-            $csvString = $csvString . iconv(DataFormat::INPUT_ENCODING, "UTF-8", $resultHeader[$i]) . ",";
+            $inputEncoding = $this->detectStringEncoding($resultHeader[$i]);
+            $csvString = $csvString . iconv($inputEncoding, "UTF-8", $resultHeader[$i]) . ",";
         }
 
         $totalNumberOfTitles = $this->totalNumberOfTitles;
@@ -264,7 +280,9 @@ class Process{
         $totalNumberOfTitles = $this->totalNumberOfTitles;
         
         for ($i = 0; $i < $countInfoColumn; $i++){
-            $csvString = $csvString . iconv(DataFormat::INPUT_ENCODING, "UTF-8", $this->rowAnswer[$studentNumber][$this::STUDENT_INFO][$i]) . ",";
+            $studentInfo = $this->rowAnswer[$studentNumber][$this::STUDENT_INFO][$i];
+            $inputEncoding = $this->detectStringEncoding($studentInfo);
+            $csvString = $csvString . iconv($inputEncoding, "UTF-8", $studentInfo) . ",";
         }
         
         for ($i = 0; $i < $totalNumberOfTitles; $i++){
