@@ -22,6 +22,7 @@ class Process{
 
     // 파일
     private $file;          // 파일(읽음)
+    private $fileName;      // 파일 이름
     private $fileLocation;  // 파일 위치
 
     //////// DataFormat에서 설정한 값을 읽기 위한 변수 ////
@@ -29,20 +30,18 @@ class Process{
     private $uploadDirName;         // 업로드 디렉토리 이름
     private $questionBeginIndex;    // 문제 시작 인덱스
     private $questionEndIndex;      // 문제 종료 인덱스
-    private $questionBeginColumn;   // 문제 시작 CSV 열 번호
     private $questionEndColumn;     // 문제 종료 CSV 열 번호
     private $answerDataRange;       // 데이터 범위 1 부터 X 까지
 
     public function __construct(){
         // 정의된 값을 세팅한다.
         $this->dataFormat = new DataFormat();
-        $this->uploadDirName = $this->dataFormat->getUploadDirName();
-        $this->questionBeginColumn = $this->dataFormat->getQuestionBeginColumn();
-        $this->questionEndColumn = $this->dataFormat->getQuestionEndColumn();
-        $this->answerDataRange = $this->dataFormat->getAnswerDataRange();
+        $this->uploadDirName = DataFormat::UPLOAD_DIR_NAME;
+        $this->questionEndColumn = DataFormat::QUESTION_END_COLUMN;
+        $this->answerDataRange = DataFormat::ANSWER_DATA_RANGE;
         $this->totalNumberOfTitles = $this->dataFormat->getTotalNumberOfTitles();
 
-        $this->questionBeginIndex = $this->questionBeginColumn -1;  // 문제시작 배열 인덱스
+        $this->questionBeginIndex = DataFormat::QUESTION_BEGIN_COLUMN -1;  // 문제시작 배열 인덱스
         $this->questionEndIndex = $this->questionEndColumn -1; // 문제종료 배열 인덱스
 
         $this->makeUploadDir();
@@ -95,9 +94,9 @@ class Process{
 
     // 파일 복사
     public function fileCopy(){
-        $fileName = $_FILES["file"]["name"];
+        $this->fileName = $_FILES["file"]["name"];
         $tmpFileName =  $_FILES["file"]["tmp_name"];
-        $this->setFileLocation($fileName);
+        $this->setFileLocation($this->fileName);
         return move_uploaded_file($tmpFileName, $this->fileLocation);
     }
 
@@ -156,7 +155,7 @@ class Process{
 
     // 역문항 처리
     private function isReverseScoring($questionNumber){
-        if( array_key_exists($questionNumber, $this->dataFormat->getReverseQuestions()) ){
+        if( array_key_exists($questionNumber, DataFormat::REVERSE_QUESTIONS) ){
             return true;
         } else {
             return false;
@@ -202,9 +201,9 @@ class Process{
     // 결과가 +(플러스) 이면 소수점 버림
     public function tScoring(){
         $totalNumberOfTitles = $this->totalNumberOfTitles; //타이틀 수가 일치하지 않으면 예외를 던지니 걱정하지 말 것.
-        $tScoring = $this->dataFormat->getTScoring();
-        $tScoringMultiValue = $this->dataFormat->getTScoringMultiValue();
-        $tScoringAddValue = $this->dataFormat->getTScoringAddValue();
+        $tScoring = DataFormat::T_SCORING;
+        $tScoringMultiValue = DataFormat::T_SCORING_MULTI_VALUE;
+        $tScoringAddValue = DataFormat::T_SCORING_ADD_VALUE;
 
         // 학생 수 만큼 반복
         for ($n=0; $n < $this->students; $n++) {
@@ -243,11 +242,11 @@ class Process{
         $countResultHeader = count($resultHeader);
 
         for ($i = 0; $i < $countResultHeader; $i++){
-            $csvString = $csvString . iconv("EUC-KR", "UTF-8", $resultHeader[$i]) . ",";
+            $csvString = $csvString . iconv(DataFormat::INPUT_ENCODING, "UTF-8", $resultHeader[$i]) . ",";
         }
 
         $totalNumberOfTitles = $this->totalNumberOfTitles;
-        $tScoring = $this->dataFormat->getTScoring();
+        $tScoring = DataFormat::T_SCORING;
         for ($i = 0; $i < $totalNumberOfTitles; $i++){
             if(0 < $i){
                 $csvString = $csvString . ",";
@@ -255,7 +254,7 @@ class Process{
             $csvString = $csvString . $tScoring[$i][0];
         }
 
-        return iconv("UTF-8", "EUC-KR", $csvString);    // 엑셀 기본 인코딩이 EUC-KR
+        return iconv("UTF-8", DataFormat::OUTPUT_ENCODING, $csvString);
     }
 
     // CSV 형식 String 만들기 (rows) - tScoring() 선실행 필요
@@ -265,7 +264,7 @@ class Process{
         $totalNumberOfTitles = $this->totalNumberOfTitles;
         
         for ($i = 0; $i < $countInfoColumn; $i++){
-            $csvString = $csvString . iconv("EUC-KR", "UTF-8", $this->rowAnswer[$studentNumber][$this::STUDENT_INFO][$i]) . ",";
+            $csvString = $csvString . iconv(DataFormat::INPUT_ENCODING, "UTF-8", $this->rowAnswer[$studentNumber][$this::STUDENT_INFO][$i]) . ",";
         }
         
         for ($i = 0; $i < $totalNumberOfTitles; $i++){
@@ -275,7 +274,7 @@ class Process{
             $csvString = $csvString . $this->rowAnswer[$studentNumber][$this->dataFormat->getMatchingQuestions($i)[0]];
         }
         
-        return iconv("UTF-8", "EUC-KR", $csvString);    // 엑셀 기본 인코딩이 EUC-KR
+        return iconv("UTF-8", DataFormat::OUTPUT_ENCODING, $csvString);
     }
 
     // CSV 다운로드 - 계산이 끝난 후에 실행 가능.
@@ -283,7 +282,7 @@ class Process{
         // 파일 다운로드 처리 (하기 헤더가 있으면 파일다운로드로 간주한다.)
         header('Content-Type: application/octet-stream');
         header("Content-Transfer-Encoding: Binary");
-        header("Content-disposition: attachment; filename=\"" . "result.csv" . "\"");
+        header("Content-disposition: attachment; filename=\"" . $this->fileName . "_result.csv" . "\"");
 
         echo $this->makeCSVStringRowHeader();
         echo "\r\n";
