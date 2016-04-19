@@ -74,11 +74,8 @@ class DataFormat {
     const UPLOAD_DIR_NAME = "temp_upload";
 
     // 출력 메시지
-    const MASSAGE = [
-        "uploadFail"=>"파일 업로드가 실패했습니다.",
-        "countFail" =>"파일에서 전체 문항 수가 부족합니다.",
-        "formatFail"=>"문항 입력값이 1~5 가 아닙니다(파일 형식이 다릅니다)."
-    ];
+    const MASSAGE_UPLOAD_FAIL = "파일 업로드 실패: 파일이 복사되지 않음. 관리자에 문의하세요.";
+    const MASSAGE_COUNT_FAIL = "CSV 파일에서 전체 문항 수가 부족합니다.";
 
     /////////////////////////////////////////////
     // 전체 문항수가 바뀌면 반드시 변경해야 한다.
@@ -161,10 +158,6 @@ class DataFormat {
 
     public function getUploadDirName(){
         return $this::UPLOAD_DIR_NAME;
-    }
-
-    public function getMessage($select){
-        return $this::MASSAGE[$select];
     }
 
     public function getReverseQuestions(){
