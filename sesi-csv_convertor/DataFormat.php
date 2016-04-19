@@ -77,6 +77,10 @@ class DataFormat {
     const MASSAGE_UPLOAD_FAIL = "파일 업로드 실패: 파일이 복사되지 않음. 관리자에 문의하세요.";
     const MASSAGE_COUNT_FAIL = "CSV 파일에서 전체 문항 수가 부족합니다.";
 
+    // 문자인코딩
+    const INPUT_ENCODING = "EUC-KR";    // 입력 CSV 파일 인코딩(사실 중요하지 않다)
+    const OUTPUT_ENCODING = "EUC-KR";   // 결과 CSV 파일 인코딩(엑셀 기본 인코딩이 EUC-KR)
+
     /////////////////////////////////////////////
     // 전체 문항수가 바뀌면 반드시 변경해야 한다.
     /////////////////////////////////////////////
@@ -156,14 +160,6 @@ class DataFormat {
         }
     }
 
-    public function getUploadDirName(){
-        return $this::UPLOAD_DIR_NAME;
-    }
-
-    public function getReverseQuestions(){
-        return $this::REVERSE_QUESTIONS;
-    }
-
     // 매칭 질문을 리턴
     public function getMatchingQuestions($arrayNumber){
         if($arrayNumber >= $this->totalNumberOfTitles){
@@ -171,30 +167,6 @@ class DataFormat {
         } else {
             return $this::MATCHING_QUESTIONS[$arrayNumber];
         }
-    }
-
-    public function  getQuestionBeginColumn(){
-        return $this::QUESTION_BEGIN_COLUMN;
-    }
-
-    public function  getQuestionEndColumn(){
-        return $this::QUESTION_END_COLUMN;
-    }
-
-    public function  getAnswerDataRange(){
-        return $this::ANSWER_DATA_RANGE;
-    }
-
-    public function getTScoring(){
-        return $this::T_SCORING;
-    }
-
-    public function getTScoringMultiValue(){
-        return $this::T_SCORING_MULTI_VALUE;
-    }
-
-    public function getTScoringAddValue(){
-        return $this::T_SCORING_ADD_VALUE;
     }
 
     public function  getTotalNumberOfTitles(){
