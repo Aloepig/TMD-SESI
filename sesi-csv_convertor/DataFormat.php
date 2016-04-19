@@ -78,7 +78,7 @@ class DataFormat {
     const MASSAGE_COUNT_FAIL = "CSV 파일에서 전체 문항 수가 부족합니다.";
 
     // 문자인코딩
-    const INPUT_ENCODING = "EUC-KR";    // 입력 CSV 파일 인코딩(사실 중요하지 않다)
+    const INPUT_DEFAULT_ENCODING = "EUC-KR";    // 입력 CSV 파일 인코딩(인코딩 판별 실패시 사용할 기본 값)
     const OUTPUT_ENCODING = "EUC-KR";   // 결과 CSV 파일 인코딩(엑셀 기본 인코딩이 EUC-KR)
 
     /////////////////////////////////////////////
