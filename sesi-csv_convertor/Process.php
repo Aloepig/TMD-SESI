@@ -24,6 +24,7 @@ class Process{
     private $file;          // 파일(읽음)
     private $fileName;      // 파일 이름
     private $fileLocation;  // 파일 위치
+    private $fileChractorEncoding;  // 파일 문자인코딩
 
     //////// DataFormat에서 설정한 값을 읽기 위한 변수 ////
     private $dataFormat;
@@ -112,7 +113,7 @@ class Process{
                 // php 5.6에서는 잘못된 문자열이 들어오면 false가 아닌 에러를 던짐.
             }
         }
-        return DataFormat::INPUT_DEFAULT_ENCODING;
+        return DataFormat::DEFAULT_ENCODING;
     }
 
     // 파일 읽어 계산 준비 - 임시파일은 읽고 나서 삭제한다.
@@ -123,6 +124,8 @@ class Process{
 
             // 첫 row 복사
             $this->rowHeader = fgetcsv($this->file);
+            // 문자인코딩은 일괄적이기 때문에 여기서 체크
+            $this->fileChractorEncoding = $this->detectStringEncoding($this->rowHeader);    
 
             // 첫 행에서 전체 문항수를 체크
             if ( count($this->rowHeader) !== ($this->questionEndColumn) ){
@@ -257,8 +260,7 @@ class Process{
         $countResultHeader = count($resultHeader);
 
         for ($i = 0; $i < $countResultHeader; $i++){
-            $inputEncoding = $this->detectStringEncoding($resultHeader[$i]);
-            $csvString = $csvString . iconv($inputEncoding, "UTF-8", $resultHeader[$i]) . ",";
+            $csvString = $csvString . iconv($this->fileChractorEncoding, "UTF-8", $resultHeader[$i]) . ",";
         }
 
         $totalNumberOfTitles = $this->totalNumberOfTitles;
@@ -270,7 +272,7 @@ class Process{
             $csvString = $csvString . $tScoring[$i][0];
         }
 
-        return iconv("UTF-8", DataFormat::OUTPUT_ENCODING, $csvString);
+        return iconv("UTF-8", $this->fileChractorEncoding, $csvString);
     }
 
     // CSV 형식 String 만들기 (rows) - tScoring() 선실행 필요
@@ -280,9 +282,7 @@ class Process{
         $totalNumberOfTitles = $this->totalNumberOfTitles;
         
         for ($i = 0; $i < $countInfoColumn; $i++){
-            $studentInfo = $this->rowAnswer[$studentNumber][$this::STUDENT_INFO][$i];
-            $inputEncoding = $this->detectStringEncoding($studentInfo);
-            $csvString = $csvString . iconv($inputEncoding, "UTF-8", $studentInfo) . ",";
+            $csvString = $csvString . iconv($this->fileChractorEncoding, "UTF-8", $this->rowAnswer[$studentNumber][$this::STUDENT_INFO][$i]) . ",";
         }
         
         for ($i = 0; $i < $totalNumberOfTitles; $i++){
@@ -292,7 +292,7 @@ class Process{
             $csvString = $csvString . $this->rowAnswer[$studentNumber][$this->dataFormat->getMatchingQuestions($i)[0]];
         }
         
-        return iconv("UTF-8", DataFormat::OUTPUT_ENCODING, $csvString);
+        return iconv("UTF-8", $this->fileChractorEncoding, $csvString);
     }
 
     // CSV 다운로드 - 계산이 끝난 후에 실행 가능.
