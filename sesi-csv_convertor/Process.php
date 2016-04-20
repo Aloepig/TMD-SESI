@@ -103,7 +103,7 @@ class Process{
 
     // 인코딩 확인
     public function detectStringEncoding($string){
-        $encoding = array("UTF-8", "EUC-KR");
+        $encoding = array("EUC-KR", "UTF-8");
         foreach ($encoding as $item){
             try{
                 if( iconv($item, $item, $string) != false){
