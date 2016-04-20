@@ -11,6 +11,7 @@ include_once "../Process.php";
 class ProcessTest extends PHPUnit_Framework_TestCase{
 
     const TEST_FILE_NAME = "sesi_csv_test.csv";
+    //const TEST_FILE_NAME = "sesi_csv_utf8.csv";
     private $testClass;
 
     // 테스트 클래스 인스턴스 생성
