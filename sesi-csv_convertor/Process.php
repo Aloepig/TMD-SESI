@@ -111,6 +111,7 @@ class Process{
                 }
             } catch (Exception $e){
                 // php 5.6에서는 잘못된 문자열이 들어오면 false가 아닌 에러를 던짐.
+                // illegal character 로 판정된다.
             }
         }
         return DataFormat::DEFAULT_ENCODING;
@@ -124,8 +125,8 @@ class Process{
 
             // 첫 row 복사
             $this->rowHeader = fgetcsv($this->file);
-            // 문자인코딩은 일괄적이기 때문에 여기서 체크
-            $this->fileChractorEncoding = $this->detectStringEncoding($this->rowHeader);    
+            // 문자인코딩은 일괄적이기 때문에 여기서 체크, 첫번째 컬럼값으로 판별한다.
+            $this->fileChractorEncoding = $this->detectStringEncoding($this->rowHeader[0]);
 
             // 첫 행에서 전체 문항수를 체크
             if ( count($this->rowHeader) !== ($this->questionEndColumn) ){
