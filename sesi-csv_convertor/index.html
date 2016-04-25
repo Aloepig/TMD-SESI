@@ -7,33 +7,8 @@
     <title>SESI 결과파일(CSV)생성 페이지</title>
 
     <link href="css/sesi.css" rel="stylesheet">
-    <script src="./js/jquery-1.12.3.min.js"></script>
 </head>
 <body>
-<script>
-    $(document).ready(function(){
-        var fileName;
-        var validation = function(){
-            fileName = $("#INPUT-UPLOAD").val();
-            if( fileName === "" || fileName === null || fileName === undefined){
-                $("#MESSAGE1").show();
-                return false;
-            } else {
-                $("#MESSAGE1").hide();
-                return true;
-            }
-        }
-
-        $("#SUBMIT").click(function(event){
-            event.preventDefault();
-            if(validation()){
-                $("#target").submit();
-                $("#MESSAGE2").text(fileName + "[[ 파일 변환 ]]");
-                $("#MESSAGE2").show();
-            }
-        });
-    });
-</script>
 
 <div id="SESI_CONVERTER">
     <div class="page-header">
@@ -77,6 +52,32 @@
         <p>(주) TMD 교육그룹 2016</p>
     </footer>
 </div>
+
+<script src="./js/jquery-1.12.3.min.js"></script>
+<script>
+    $(document).ready(function(){
+        var fileName;
+        var validation = function(){
+            fileName = $("#INPUT-UPLOAD").val();
+            if( fileName === "" || fileName === null || fileName === undefined){
+                $("#MESSAGE1").show();
+                return false;
+            } else {
+                $("#MESSAGE1").hide();
+                return true;
+            }
+        }
+
+        $("#SUBMIT").click(function(event){
+            event.preventDefault();
+            if(validation()){
+                $("#target").submit();
+                $("#MESSAGE2").text(fileName + "[[ 파일 변환 ]]");
+                $("#MESSAGE2").show();
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
