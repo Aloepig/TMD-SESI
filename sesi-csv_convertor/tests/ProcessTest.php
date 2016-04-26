@@ -165,4 +165,12 @@ class ProcessTest extends PHPUnit_Framework_TestCase{
         $this->assertEquals(iconv("UTF-8", "EUC-KR", $resultCSVStringRow), $this->testClass->makeCSVStringRow(0));
     }
 
+    // changeFileNameEncodingUTF8 테스트 - IE에서는 한글 파일명이 깨져서 추가.
+    public function testChangeFileNameEncodingUTF8(){
+        $this->testClass->setFileName( iconv("UTF-8", "EUC-KR","안녕하세요.CSV"));
+        $this->testClass->changeFileNameEncodingUTF8();
+        $fileNAme = $this->testClass->getFileName();
+        $this->assertEquals("안녕하세요.CSV", $fileNAme);
+    }
+
 }
