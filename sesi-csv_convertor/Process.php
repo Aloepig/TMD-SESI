@@ -62,9 +62,6 @@ class Process{
     public function getFile(){
         return $this->file;
     }
-    public function getFileName(){
-        return $this->fileName;
-    }
     public function getUploadDirName(){
         return $this->uploadDirName;
     }
@@ -79,9 +76,6 @@ class Process{
     // 파일 복사 위치
     public function setFileLocation($fileName){
         $this->fileLocation = $this->uploadDirName."/".basename($fileName);
-    }
-    public function setFileName($fileName){
-        $this->fileName = $fileName;
     }
 
     // 파일 읽기
@@ -301,16 +295,10 @@ class Process{
         
         return iconv("UTF-8", $this->fileChractorEncoding, $csvString);
     }
-    
-    // fileName 인코딩 - IE대응: 한글 파일명이 깨져서 대응
-    public  function changeFileNameEncodingUTF8(){
-        $fileNameEncoding = $this->detectStringEncoding($this->fileName);
-        $this->fileName = iconv($fileNameEncoding, "UTF-8", $this->fileName);
-    }
 
     // CSV 다운로드 - 계산이 끝난 후에 실행 가능.
     public function CSVDownlod(){
-        $this->changeFileNameEncodingUTF8();
+        $this->fileName = iconv("UTF-8", DataFormat::IE_FILENAME_ENCODING,  $this->fileName);
         // 파일 다운로드 처리 (하기 헤더가 있으면 파일다운로드로 간주한다.)
         header('Content-Type: application/octet-stream');
         header("Content-Transfer-Encoding: Binary");
