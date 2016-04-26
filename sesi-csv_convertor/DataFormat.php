@@ -78,8 +78,8 @@ class DataFormat {
     const MASSAGE_COUNT_FAIL = "CSV 파일에서 전체 문항 수가 부족합니다.";
 
     // 문자인코딩
-    // 문자인코딩
-    const DEFAULT_ENCODING = "EUC-KR";    // 입출력 CSV 문자인코딩(인코딩 판별 실패시 사용할 기본 값. PC엑셀 기본값임)
+    const DEFAULT_ENCODING = "EUC-KR";    // 입출력 CSV 문자인코딩(인코딩 판별 실패시 사용할 기본 값). PC 엑셀기준.
+    const IE_FILENAME_ENCODING = "EUC-KR"; //IE 에서는 (Edge포함) UTF-8 한글명이 깨짐. 2016-04-26
 
     /////////////////////////////////////////////
     // 전체 문항수가 바뀌면 반드시 변경해야 한다.
