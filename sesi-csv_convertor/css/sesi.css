@@ -37,6 +37,7 @@ small {
    float: left;
 }
 #SESI_CONVERTER #FILE_UPLOAD{
+    width: 353px;
     float: right;
 }
 
